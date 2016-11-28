@@ -51,6 +51,7 @@ def get_credentials():
     return credentials
 
 def writeToSheet(service,stock,range):
+    """Writes the stock to sheet using the service"""
     values = []
     for d in stock:
         values.append(d.toArray())
@@ -64,19 +65,26 @@ def writeToSheet(service,stock,range):
     range=range,valueInputOption='USER_ENTERED',body=body).execute()
 
 def clearSheet(service,range):
+    """Clears the cells of the sheet using the service"""
     service.spreadsheets().values().clear(spreadsheetId=spreadsheetId,
     range=range,body={}).execute()
 
 
 def main():
-    """Write to Sheet"""
 
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
-                    'version=v4')
-    service = discovery.build('sheets', 'v4', http=http,
-                              discoveryServiceUrl=discoveryUrl)
+    #Retries to connect upto 10 times in case of error
+    for attempt in range(10):
+        try:
+            credentials = get_credentials()
+            http = credentials.authorize(httplib2.Http())
+            discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
+                            'version=v4')
+            service = discovery.build('sheets', 'v4', http=http,
+                                      discoveryServiceUrl=discoveryUrl)
+        except:
+            continue
+        else:
+            break
 
     desktop_sheet, laptop_sheet = getSheets(ODS_FILE)
 
