@@ -1,3 +1,5 @@
 pyexcel
 pyexcel-ods
+httplib2
+os
 google-api-python-client
