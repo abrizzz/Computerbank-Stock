@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import pyexcel as pe
+from keys import *
 
 OS = "Ubuntu 16.04"
 
@@ -107,3 +108,25 @@ def getDesktops(desktop_sheet):
             done = True
         current_row+=1
     return desktop_stock
+
+def main():
+    desktop_sheet, laptop_sheet = getSheets(ODS_FILE)
+    desktop_stock = getDesktops(desktop_sheet)
+    laptop_stock = getLaptops(laptop_sheet)
+
+    while True:
+        print("Loop")
+        desktop_sheet_new, laptop_sheet_new = getSheets(ODS_FILE)
+        if(desktop_sheet.array != desktop_sheet_new.array):
+            desktop_sheet = desktop_sheet_new
+            desktop_stock = getDesktops(desktop_sheet)
+
+        if(laptop_sheet.array != laptop_sheet_new.array):
+            laptop_sheet = laptop_sheet_new
+            laptop_stock = getLaptops(laptop_sheet)
+        print("Sleeping")
+        time.sleep(INTERVAL)
+
+
+if __name__ == '__main__':
+    main()
